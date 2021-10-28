@@ -15,7 +15,7 @@ const addUser = async ({ name, email, city, age }) => {
   }
 };
 
-const findAllUsers = async () => {
+const getAllUsers = async () => {
   try {
     const db = await connection();
     return await db.collection(NAME_COLLECTION).find().toArray();
@@ -27,5 +27,5 @@ const findAllUsers = async () => {
 
 module.exports = {
   addUser,
-  findAllUsers,
+  getAllUsers,
 };
