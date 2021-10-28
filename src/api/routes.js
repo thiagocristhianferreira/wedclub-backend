@@ -1,23 +1,29 @@
 const express = require('express');
 
-const registerController = require('../controllers/registerController');
+const {
+  createUser,
+  getAllUsers,
+  getUserById,
+  editUserById,
+  deleteUserById,
+} = require('../controllers/registerController');
 
 const registerRoute = express.Router();
 
 // Criar uma rota para criar usuário
-registerRoute.post('/', registerController.createUser);
+registerRoute.post('/', createUser);
 
 // Criar uma rota para retornar usuários
-registerRoute.get('/', registerController.getAllUsers);
+registerRoute.get('/', getAllUsers);
 
 // Criar uma rota para retornar um usuário específico
-registerRoute.get('/:id', registerController.getUserById);
+registerRoute.get('/:id', getUserById);
 
 // Criar uma rota para atualizar usuário
-registerRoute.put('/:id', registerController.editUserById);
+registerRoute.put('/:id', editUserById);
 
 // Criar uma rota para excluir usuário
-registerRoute.delete('/:id', registerController.deleteUserById);
+registerRoute.delete('/:id', deleteUserById);
 
 module.exports = {
   registerRoute,
