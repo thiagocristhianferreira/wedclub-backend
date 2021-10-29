@@ -12,14 +12,13 @@ const getAllUsers = async () => {
   }
 };
 
-const addUser = async ({ name, email, city, age }) => {
+const addUser = async ({ ID, name, email, city, age }) => {
   try {
     const db = await connection();
-    const userId = await getAllUsers();
     return await db
       .collection(NAME_COLLECTION)
       .insertOne({
-        userId: parseInt(userId.length + 1, 10),
+        userId: parseInt(ID, 10),
         name,
         email,
         city,
@@ -45,11 +44,22 @@ const getUserByUserId = async (id) => {
 };
 
 const userUpdate = async (id, { name, email, city, age }) => {
-  // console.log(parameter);
   try {
     const user = await connection().then((db) => db
         .collection(NAME_COLLECTION)
         .updateOne({ userId: id }, { $set: { name, email, city, age } }));
+    return user;
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+};
+
+const userDelete = async (id) => {
+  try {
+    const user = await connection().then((db) => db
+        .collection(NAME_COLLECTION)
+        .deleteOne({ userId: id }));
     return user;
   } catch (error) {
     console.log(error.message);
@@ -62,4 +72,5 @@ module.exports = {
   getAllUsers,
   getUserByUserId,
   userUpdate,
+  userDelete,
 };

@@ -5,6 +5,7 @@ const {
   getAllUsers,
   getUserByUserId,
   userUpdate,
+  userDelete,
 } = require('../models/registerModel');
 
 const {
@@ -19,12 +20,17 @@ const checkParameters = async ({ name, email, city, age }) => {
   }
 };
 
-const writeUser = async ({ id, name, email, city, age }) => {
+const writeUser = async ({ name, email, city, age }) => {
   await checkParameters({ name, email, city, age });
   const userList = await getAllUsers();
+  let ID = userList.length + 1;
+  if (userList) {
+    const lastIndex = userList.length - 1;
+    ID = userList[lastIndex].userId + 1;
+  }
   const checkExists = userList.some((userRegister) => userRegister.email === email);
   if (checkExists) return boom.conflict('User Already Registered').output.payload;
-  await addUser({ id, name, email, city, age });
+  await addUser({ ID, name, email, city, age });
   return { name, email };
 };
 
@@ -49,9 +55,18 @@ const updateUserById = async (id, { name, email, city, age }) => {
   return getById(id);
 };
 
+const removeUserById = async (id) => {
+  const getUser = await getById(id);
+  if (getUser.error) {
+    return boom.badRequest(`Not Found Id: ${id}`).output.payload;
+  }
+  return userDelete(id);
+};
+
 module.exports = {
   writeUser,
   readUsers,
   getById,
   updateUserById,
+  removeUserById,
 };

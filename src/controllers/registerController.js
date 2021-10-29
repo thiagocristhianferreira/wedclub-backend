@@ -3,6 +3,7 @@ const {
   readUsers,
   getById,
   updateUserById,
+  removeUserById,
 } = require('../services/registerService');
 
 const {
@@ -11,8 +12,8 @@ const {
 } = require('../utils/success');
 
 const createUser = async (req, res) => {
-  const { id, name, email, city, age } = req.body;
-  const result = await writeUser({ id, name, email, city, age });
+  const { name, email, city, age } = req.body;
+  const result = await writeUser({ name, email, city, age });
   if (result.error) {
     const { statusCode, message, error } = result;
     return res.status(statusCode).json({ error, message });
@@ -47,9 +48,17 @@ const editUserById = async (req, res) => {
   return res.status(OK).json({ userEdited: result });
 };
 
-const deleteUserById = async (_req, res) => {
-  console.log();
-  return res.status(200).json({ userDeleted: 'result' });
+const deleteUserById = async (req, res) => {
+  const { id } = req.params;
+  const data = await removeUserById(parseInt(id, 10));
+  if (data.error) {
+    const { message, error, statusCode } = data;
+    return res.status(statusCode).json({ error, message });
+  }
+  return res.status(OK).json({
+    userDeleted: `userId: ${id}`,
+    message: 'User deleted',
+  });
 };
 
 module.exports = {
