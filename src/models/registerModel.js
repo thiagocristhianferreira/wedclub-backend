@@ -44,8 +44,22 @@ const getUserByUserId = async (id) => {
   }
 };
 
+const userUpdate = async (id, { name, email, city, age }) => {
+  // console.log(parameter);
+  try {
+    const user = await connection().then((db) => db
+        .collection(NAME_COLLECTION)
+        .updateOne({ userId: id }, { $set: { name, email, city, age } }));
+    return user;
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+};
+
 module.exports = {
   addUser,
   getAllUsers,
   getUserByUserId,
+  userUpdate,
 };
