@@ -4,6 +4,7 @@ const {
   getById,
   updateUserById,
   removeUserById,
+  uploadImage,
 } = require('../services/registerService');
 
 const {
@@ -29,7 +30,7 @@ const getAllUsers = async (_req, res) => {
 const getUserById = async (req, res) => {
   const { id } = req.params;
   const result = await getById(parseInt(id, 10));
-  if (!result) {
+  if (result.error) {
     const { message, error, statusCode } = result;
     return res.status(statusCode).json({ error, message });
   }
@@ -61,10 +62,31 @@ const deleteUserById = async (req, res) => {
   });
 };
 
+const uploadUserImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { path } = req.file;
+    const result = await uploadImage(parseInt(id, 10), path);
+
+    if (result.error) {
+      const { message, error, statusCode } = result;
+      return res.status(statusCode).json({ error, message });
+    }
+
+    const data = await getById(parseInt(id, 10));
+
+    return res.status(OK).json(data);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(404).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createUser,
   getAllUsers,
   getUserById,
   editUserById,
   deleteUserById,
+  uploadUserImage,
 };

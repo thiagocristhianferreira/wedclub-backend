@@ -1,4 +1,5 @@
 const boom = require('@hapi/boom');
+const gm = require('gm');
 
 const {
   addUser,
@@ -6,6 +7,7 @@ const {
   getUserByUserId,
   userUpdate,
   userDelete,
+  uploadImageById,
 } = require('../models/registerModel');
 
 const {
@@ -63,10 +65,21 @@ const removeUserById = async (id) => {
   return userDelete(id);
 };
 
+const uploadImage = async (id, path) => {
+  const userExists = await getUserByUserId(id);
+  if (!userExists) {
+    return boom.badRequest(`Not Found Id: ${id}`).output.payload;
+  }
+  const resize = gm(path).resize(200, 200, '!');
+  const quality = gm(path).quality(70);
+  return uploadImageById(id, path) && resize && quality;
+};
+
 module.exports = {
   writeUser,
   readUsers,
   getById,
   updateUserById,
   removeUserById,
+  uploadImage,
 };

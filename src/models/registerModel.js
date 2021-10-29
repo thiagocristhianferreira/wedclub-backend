@@ -30,12 +30,11 @@ const addUser = async ({ ID, name, email, city, age }) => {
   }
 };
 
-const getUserByUserId = async (id) => { 
+const getUserByUserId = async (id) => {
   try {
     const user = await connection().then((db) => db
         .collection(NAME_COLLECTION)
         .findOne({ userId: id }));
-    if (!user) return null;
     return user;
   } catch (error) {
     console.log(error.message);
@@ -67,10 +66,23 @@ const userDelete = async (id) => {
   }
 };
 
+const uploadImageById = async (id, path) => {
+  try {
+    const db = await connection();
+    return await db
+    .collection(NAME_COLLECTION)
+    .updateOne({ userId: id }, { $set: { image: path } });
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+};
+
 module.exports = {
   addUser,
   getAllUsers,
   getUserByUserId,
   userUpdate,
   userDelete,
+  uploadImageById,
 };
